@@ -1,0 +1,18 @@
+export const teamAvatars = [
+  { id: '1', name: 'Voltura', avatar: 'Voltura.png' },
+  { id: '2', name: 'Ignora', avatar: 'Ignora.png' },
+  { id: '3', name: 'Terranova',avatar: 'Terranova.png' },
+  { id: '4', name: 'Aqualis', avatar: 'Aqualis.png' },
+  { id: '5', name: 'Lunaris', avatar: 'Lunaris.png' },
+  { id: '6', name: 'Solarix', avatar: 'Solarix.png' },
+  { id: '7', name: 'Nebulis', avatar: 'Nebulis.png' },
+  { id: '8', name: 'Mystara', avatar: 'Mystara.png' },
+  { id: '9', name: 'Dracora', avatar: 'Dracora.png' },
+  { id: '10', name: 'Fulgora', avatar: 'Fulgora.png' },
+  { id: '11', name: 'Cryora', avatar: 'Cryora.png' },
+  { id: '12', name: 'Zentrix', avatar: 'Zentrix.png' },
+  { id: '13', name: 'Aerion', avatar: 'Aerion.png' },
+  { id: '14', name: 'Oblivor', avatar: 'Oblivor.png' },
+  { id: '15', name: 'Vortexa', avatar: 'Vortexa.png' },
+  { id: '16', name: 'Pyronis', avatar: 'Pyronis.png' },
+]
