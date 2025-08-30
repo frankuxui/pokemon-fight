@@ -22,6 +22,5 @@ export default {
       'utf-8'
     )
 
-    console.log('Build manifest escrito en build/__build-manifest.json')
   },
 } satisfies Config

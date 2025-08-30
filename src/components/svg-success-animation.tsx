@@ -24,11 +24,11 @@ export default function SvgSuccessAnimation (props: SvgSuccessAnimationProps) {
       style={style}
       {...rest}
     >
-      <g id='check-group' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd' >
-        <circle className='fill-circle' id='filled-circle' fill={background ?? '#1b0bff'} cx='66.5' cy='66.5' r='54.5' />
+      <g className='w-full h-full' id='check-group' stroke='none' strokeWidth='1' fill='none' fillRule='evenodd' >
+        <circle className='fill-circle' id='filled-circle' fill={background ?? '#1b0bff'} cx='66.5' cy='66.5' r='60' />
         <circle id='white-circle' fill={foreground ?? '#FFFFFF'} cx='66.5' cy='66.5' r='55.5' />
         <circle className='circle-outline' id='outline' stroke={background ?? '#1b0bff'} strokeWidth='4' cx='66.5' cy='66.5' r='54.5' />
-        <polyline id='check' stroke={foreground ?? '#FFFFFF'} strokeWidth='5' points='41 70 56 85 92 49' />
+        <polyline id='check' className='check' stroke={foreground ?? '#FFFFFF'} strokeWidth='5' points='41 70 56 85 92 49' />
       </g>
     </svg>
   )

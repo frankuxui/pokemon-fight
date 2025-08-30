@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useEffect } from 'react'
-import { Spinner } from 'src/components/ui'
+import { Button, Spinner } from 'src/components/ui'
 import { useForm } from 'react-hook-form'
 import { useInfinitePokemonList } from 'src/services/queries'
 import type { Pokemon } from 'src/types/Pokemon'
@@ -8,6 +8,8 @@ import { useDebounce } from 'src/hooks/useDebounce'
 import { SearchInput } from 'src/components/search-input'
 import { cn } from 'src/lib/utils'
 import { Ban } from 'lucide-react'
+import { useSelectedPokemonsStore } from 'src/store'
+import { AnimatePresence, motion } from 'motion/react'
 
 /*
 
@@ -16,6 +18,9 @@ import { Ban } from 'lucide-react'
  En esta página podrás ver y buscar todos los Pokémon disponibles en la API. He creado una lista donde se cargan los pokemones usando `useInfiniteQuery` para el manejo de la paginación y la búsqueda.
 
 */
+
+// Lazy components
+const DialogAddPokemonToTeams = React.lazy(() => import('src/components/dialogs/dialog-add-pokemons-to-team'))
 
 type SearchForm = {
   name: string
@@ -86,9 +91,15 @@ export default function PokemonList () {
     return () => observer.disconnect()
   }, [ hasNextPage, isFetchingNextPage, fetchNextPage, debouncedName, selectedTypes ])
 
+  // Zustand, hook para almacenar el id del pokkemon seleccionado
+  const { pokemons: pokemonIds } = useSelectedPokemonsStore()
+
+  // Estado para abrir el dialogo de enviar pokemones al equipo
+  const [ openDialog, setOpenDialog ] = React.useState(false)
+
   return (
     <React.Fragment>
-      <div className='w-full border-b border-border sticky top-22 py-6 z-2 bg-background'>
+      <div className='w-full border-b border-border sticky top-22 py-6 z-10 bg-background'>
         <div className='w-full mx-auto max-w-7xl px-10'>
           {/* Buscador */}
           <form className="space-y-4">
@@ -143,12 +154,45 @@ export default function PokemonList () {
           )
         }
 
-        {selectedTypes.length === 0 && !debouncedName && (
-          <div ref={loadMoreRef} className="flex justify-center p-20">
-            {isFetchingNextPage && <Spinner size="xl" />}
-          </div>
-        )}
+        {
+          selectedTypes.length === 0 && !debouncedName && (
+            <div ref={loadMoreRef} className="flex justify-center p-20">
+              {isFetchingNextPage && <Spinner size="xl" />}
+            </div>
+          )
+        }
+
+        {
+          <AnimatePresence mode='wait'>
+            {
+              pokemonIds.length > 0 && (
+                <motion.div
+                  initial={{ y: 100 }}
+                  animate={{ y: 0 }}
+                  exit={{ y: 100 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  className='bottom-0 left-0 w-full h-20 bg-black/80 fixed z-20 backdrop-blur-sm'
+                >
+                  <div className='w-full h-full max-w-7xl mx-auto px-10'>
+                    <div className='w-full h-full flex items-center justify-center gap-10'>
+                      <h6 className='font-medium text-white'>
+                        Agrega {pokemonIds.length > 1 ? 'los' : null} {pokemonIds.length} {pokemonIds.length > 1 ? 'pokemones' : 'pokémon'} { pokemonIds.length > 1 ? 'seleccionados' : 'seleccionado' }
+                      </h6>
+                      <Button
+                        onClick={() => setOpenDialog(true)}
+                        className='bg-white text-black hover:bg-white/80'>
+                          Agregar a equipos
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            }
+          </AnimatePresence>
+        }
       </div>
+
+      <DialogAddPokemonToTeams open={openDialog} setOpen={setOpenDialog} pokemonIds={pokemonIds} />
     </React.Fragment>
   )
 }

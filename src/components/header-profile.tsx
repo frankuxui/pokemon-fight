@@ -1,4 +1,4 @@
-import { autoPlacement, FloatingPortal, useClick, useDismiss, useFloating, useInteractions } from '@floating-ui/react'
+import { autoPlacement, FloatingOverlay, FloatingPortal, useClick, useDismiss, useFloating, useInteractions } from '@floating-ui/react'
 import React from 'react'
 import { Link } from 'react-router'
 import { cn } from 'src/lib/utils'
@@ -10,6 +10,7 @@ export default function HeaderProfile () {
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
     onOpenChange: setIsOpen,
+    strategy: 'fixed',
     placement: 'bottom',
     middleware: [
       autoPlacement({
@@ -51,9 +52,10 @@ export default function HeaderProfile () {
       {
         isOpen && (
           <FloatingPortal preserveTabOrder>
-            <div
+            <FloatingOverlay
+              lockScroll
               className={cn(
-                'overlay absolute inset-0 z-10 bg-foreground/10',
+                'overlay fixed inset-0 z-15 bg-foreground/10',
               )}
               onClick={() => setIsOpen(false)}
             />

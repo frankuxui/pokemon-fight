@@ -9,83 +9,8 @@ import { motion } from 'motion/react'
 import type { PokemonProfile } from 'src/types/PokemonProfile'
 import { StringUtils } from 'src/lib/string'
 import React from 'react'
-
-function PowerChart ({ stats }: { stats: { base_stat: number }[] }) {
-  const total = stats.reduce((acc, s) => acc + s.base_stat, 0)
-  const max = 255 * stats.length
-  const percentage = Math.round((total / max) * 100)
-
-  const radius = 45
-  const circumference = 2 * Math.PI * radius
-  const progress = (percentage / 100) * circumference
-
-  return (
-    <div className="relative w-20 h-20">
-      <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
-        {/* Fondo gris */}
-        <circle
-          cx="50"
-          cy="50"
-          r={radius}
-          stroke="currentColor"
-          strokeWidth="6"
-          className="text-foreground/10"
-          fill="transparent"
-        />
-        {/* Progreso */}
-        <motion.circle
-          cx="50"
-          cy="50"
-          r={radius}
-          stroke="currentColor"
-          strokeWidth="6"
-          fill="transparent"
-          strokeDasharray={circumference}
-          strokeDashoffset={circumference - progress}
-          className="text-violet-500"
-          initial={{ strokeDashoffset: circumference }}
-          animate={{ strokeDashoffset: circumference - progress }}
-          transition={{ duration: 1, ease: 'easeInOut' }}
-        />
-      </svg>
-
-      {/* Texto en el centro */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-base font-bold">{percentage}%</span>
-      </div>
-    </div>
-  )
-}
-
-function PokemonMoves ({ moves }: { moves: { move: { name: string; url: string } }[] }) {
-  const [ showAll, setShowAll ] = React.useState(false)
-  const visibleMoves = showAll ? moves : moves.slice(0, 10)
-
-  return (
-    <div className='inline-flex flex-wrap justify-start items-center gap-2 mt-2'>
-      {visibleMoves.map((m, index) => (
-        <span
-          key={index}
-          className='gap-2 rounded-full font-semibold text-xs inline-flex items-center justify-center border border-border h-8 px-3 bg-background'
-        >
-          <span>⚡</span>
-          <span className='mt-px capitalize'>{m.move.name}</span>
-        </span>
-      ))}
-
-      {
-        moves.length > 10 && (
-          <button
-            onClick={() => setShowAll(prev => !prev)}
-            className='text-xs font-medium text-foreground/70 hover:text-foreground transition-colors rounded-full bg-foreground/5 h-8 px-3'
-          >
-            {showAll ? 'Ver menos' : `Ver más (+${moves.length - 10})`}
-          </button>
-        )
-      }
-    </div>
-  )
-}
+import PokkemonPowerChart from 'src/views/pokemons/components/pokemon-power-chart'
+import PokemonMoves from 'src/views/pokemons/components/pokemon-moves'
 
 export const meta = ({ params }: Route.MetaArgs) => {
   return [
@@ -127,7 +52,6 @@ export default function PokemonPage ({ params }: { params: { id: string } }) {
   if (data) {
     pokemon = [ data ][0] as unknown as PokemonProfile
   }
-  console.log(pokemon, 'datos del pokemon')
 
   return (
     <section className="w-full h-full flex items-start justify-center pb-20">
@@ -205,7 +129,7 @@ export default function PokemonPage ({ params }: { params: { id: string } }) {
             </section>
             <section className='p-6 pt-14 sm:px-10 w-full relative'>
               <div className='w-24 h-24 inline-flex items-center justify-center absolute bg-gray-50 rounded-full border -top-12 border-border ring-border dark:bg-background'>
-                <PowerChart stats={pokemon?.stats} />
+                <PokkemonPowerChart stats={pokemon?.stats} />
               </div>
               <h3 className='font-semibold text-base mt-6'>Estadísticas</h3>
               <div className='w-full mt-4 flex flex-col gap-4'>

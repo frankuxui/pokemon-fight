@@ -7,6 +7,7 @@ import type { Pokemon } from 'src/types/Pokemon'
 // Dialogos dinamicos
 const DynamicDialogJSONView = React.lazy(() => import('src/components/dialogs/dialog-json-view'))
 const DynamicViewPokemon = React.lazy(() => import('src/views/pokemons/components/dialog-view-pokemon'))
+const DynamicDialogSendPokemonToTeam = React.lazy(() => import('src/views/pokemons/components/dialog-send-pokemon-to-team'))
 
 interface Props {
   data: Pokemon
@@ -43,7 +44,8 @@ export default function PokemonOptions ({ data, placement }: Props) {
         setOpen={setOpenDialogJSON}
       />
 
-      <DynamicViewPokemon open={openDialogDetails} setOpen={setOpenDialogDetails} item={data} />
+      <DynamicViewPokemon open={openDialogDetails} setOpen={setOpenDialogDetails} pokemon={data} />
+      <DynamicDialogSendPokemonToTeam open={openDialogAddPokemon} setOpen={setOpenDialogAddPokemon} item={data} />
     </>
   )
 }

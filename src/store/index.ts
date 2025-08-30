@@ -175,5 +175,28 @@ export const useMobileSidebarStore = create<MobileSidebarStore>()((set) => ({
   open: () => set({ isOpen: true }),
   close: () => set({ isOpen: false }),
   toggle: () => set((state) => ({ isOpen: !state.isOpen })),
-}),
-)
+}))
+
+// ----------------------------
+// Hooh para almacenar provisionalmente los pokemones seleccionados
+// ----------------------------
+
+type SelectedPokemonsStore = {
+  pokemons: string[] // Array de id
+  add: (_pokemon: string) => void
+  remove: (_id: string) => void
+  toggle: (_id: string) => void
+}
+
+export const useSelectedPokemonsStore = create<SelectedPokemonsStore>()((set) => ({
+  pokemons: [],
+  add: (pokemon) => set((state) => ({ pokemons: [ ...state.pokemons, pokemon ] })),
+  remove: (id) => set((state) => ({ pokemons: state.pokemons.filter((p) => p !== id) })),
+  toggle: (id) => set((state) => {
+    if (state.pokemons.includes(id)) {
+      return { pokemons: state.pokemons.filter((p) => p !== id) }
+    } else {
+      return { pokemons: [ ...state.pokemons, id ] }
+    }
+  })
+}))

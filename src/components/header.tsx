@@ -8,7 +8,7 @@ import HeaderMenuMobile from './header-menu-mobile'
 export default function Header () {
 
   return (
-    <header className="sticky z-10 top-0 w-full py-6 max-w-full border-b border-border bg-background/90 backdrop-blur-md">
+    <header className="sticky z-[15] top-0 w-full py-6 max-w-full border-b border-border bg-background/90 backdrop-blur-md">
       <div className="w-full mx-auto max-w-7xl px-10">
         <div className="w-full rounded-full">
           <nav className='h-full flex items-center justify-between'>

@@ -90,7 +90,7 @@ const MenuDropdown = React.memo(({
                     <FloatingOverlay
                       lockScroll
                       className={cn(
-                        'overlay absolute inset-0 z-10 bg-foreground/10',
+                        'overlay absolute inset-0 z-20 bg-foreground/10',
                         classNames?.overlay
                       )}
                       onClick={() => setIsOpen(false)}
