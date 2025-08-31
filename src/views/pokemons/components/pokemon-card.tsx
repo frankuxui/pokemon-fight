@@ -73,7 +73,14 @@ export default function PokemonCard ({ pokemon, onAdd }: Props) {
           }
         </div>
         <div className='w-full mx-auto flex items-center justify-center mt-3'>
-          <Button size={'sm'} className='px-4'>Añadir</Button>
+          <Button
+            onClick={() => toggle(String(pokemon.id))}
+            size={'sm'}
+            className='px-4'
+            variant={pokemons.includes(String(pokemon.id)) ? 'destructive' : 'default'}
+          >
+            {pokemons.includes(String(pokemon.id)) ? 'Eliminar' : 'Añadir'}
+          </Button>
         </div>
       </section>
     </article>

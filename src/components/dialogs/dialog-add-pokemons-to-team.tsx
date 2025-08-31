@@ -28,7 +28,7 @@ type TeamPokemon = {
 export default function DialogAddPokemonToTeams ({ open, setOpen, pokemonIds }: Props) {
 
   // Tanstack query ( Obtener pokemones por id )
-  const { data, isLoading, isError } = usePokemonsByIds(pokemonIds.map(id => Number(id)))
+  const { data, isLoading, isError } = usePokemonsByIds({ ids: pokemonIds.map(id => Number(id)), enabled: true })
 
   // Gestion de equipos ( Zustand store )
   const { updateTeam, teams } = useTeamStore()

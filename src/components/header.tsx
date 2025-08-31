@@ -53,6 +53,19 @@ export default function Header () {
                 Equipos
                 </NavLink>
               </li>
+              <li className='inline-block'>
+                <NavLink
+                  to="/battle"
+                  className={({ isActive }) =>
+                    cn(
+                      'px-6 xl:px-8 h-10 uppercase rounded-full inline-flex items-center justify-center text-sm font-semibold motion-safe:transition-colors duration-300 ',
+                      isActive ? 'bg-foreground text-background hover:bg-foreground' : 'hover:bg-foreground/5'
+                    )
+                  }
+                >
+                Battle
+                </NavLink>
+              </li>
             </ul>
             <div className='flex items-center justify-end gap-2'>
               <HeaderProfile />

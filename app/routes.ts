@@ -12,6 +12,7 @@ export default [
     route('pokemons/:id', 'routes/pokemon.tsx'),
     route('teams', 'routes/teams.tsx'),
     route('teams/:id', 'routes/team.tsx'),
+    route('battle', 'routes/battle.tsx'),
     route('*', 'routes/$.tsx')
   ]),
 ] satisfies RouteConfig

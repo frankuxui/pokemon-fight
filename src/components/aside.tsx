@@ -93,6 +93,19 @@ export default function Aside () {
                 Equipos
                       </NavLink>
                     </li>
+                    <li className='w-full'>
+                      <NavLink
+                        to="/battle"
+                        className={({ isActive }) =>
+                          cn(
+                            'py-4 block',
+                            isActive ? 'font-bold' : 'font-normal'
+                          )
+                        }
+                      >
+                Battle
+                      </NavLink>
+                    </li>
                   </ul>
                 </section>
                 <div className='p-8 border-t border-border bg-background'>

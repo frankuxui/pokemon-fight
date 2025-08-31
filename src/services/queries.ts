@@ -75,7 +75,7 @@ export function usePokemonById (id: string) {
 
 //
 // Query para obtener varios pokemones por sus ids
-export function usePokemonsByIds (ids: number[]) {
+export function usePokemonsByIds ({ ids, enabled }: { ids: (string | number)[]; enabled?: boolean }) {
   return useQuery<Pokemon[]>({
     queryKey: [ 'pokemonsByIds', ids ],
     queryFn: async () => {
@@ -95,6 +95,6 @@ export function usePokemonsByIds (ids: number[]) {
 
       return pokemons
     },
-    enabled: ids.length > 0, // la query solo se ejecuta si hay ids
+    enabled: enabled
   })
 }
