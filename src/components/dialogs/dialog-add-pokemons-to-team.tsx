@@ -19,16 +19,10 @@ interface Props {
   pokemonIds: string[]
 }
 
-type TeamPokemon = {
-  id: number
-  name: string
-  order: number
-}
-
 export default function DialogAddPokemonToTeams ({ open, setOpen, pokemonIds }: Props) {
 
   // Tanstack query ( Obtener pokemones por id )
-  const { data, isLoading, isError } = usePokemonsByIds({ ids: pokemonIds.map(id => Number(id)), enabled: true })
+  const { data, isLoading, isError } = usePokemonsByIds({ ids: pokemonIds.map(id => Number(id)), enabled: open })
 
   // Gestion de equipos ( Zustand store )
   const { updateTeam, teams } = useTeamStore()
@@ -37,30 +31,34 @@ export default function DialogAddPokemonToTeams ({ open, setOpen, pokemonIds }: 
   const [ team, setTeam ] = React.useState<Team | null>(teams[0] ?? null)
 
   React.useEffect(() => {
-    if (teams.length > 0) {
+    if (!team && teams.length > 0) {
+    // si no hay equipo seleccionado todavía, selecciona el primero
       setTeam(teams[0])
+    } else if (team) {
+    // si ya había equipo seleccionado, buscamos si sigue existiendo
+      const stillExists = teams.find(t => t.id === team.id)
+      if (!stillExists) {
+        setTeam(teams[0] ?? null)
+      }
     }
-  }, [ teams ])
+  }, [ teams, team ])
 
   //
   // Estado local con los pokemones seleccionados
-  const [ selectedPokemons, setSelectedPokemons ] = React.useState<TeamPokemon[]>([])
+  const [ selectedPokemons, setSelectedPokemons ] = React.useState<Pokemon[]>([])
 
   // Escuchar cuando cambia el equipo seleccionado y cargar sus pokemones
   React.useEffect(() => {
-    if (team && team.pokemons) {
+    if (team && team.pokemons && data) {
       const mapped = team.pokemons
-        .sort((a, b) => a.order - b.order)
-        .map(p => ({
-          id: p.id,
-          name: p.name,
-          order: p.order,
-        }))
+        .sort((a, b) => (a?.order ?? 0) - (b?.order ?? 0))
+        .map(p => data.find(d => d.id === p.id))
+        .filter(Boolean) as Pokemon[]
       setSelectedPokemons(mapped)
     } else {
       setSelectedPokemons([])
     }
-  }, [ team ])
+  }, [ team, data ])
 
   //
   // Estado para manejar el error si ya existe o supera el límite
@@ -80,11 +78,9 @@ export default function DialogAddPokemonToTeams ({ open, setOpen, pokemonIds }: 
       return
     }
 
-    const newPokemon: TeamPokemon = {
-      id: p.id,
-      name: p.name,
-      order: selectedPokemons.length,
-    }
+    // Clonar el Pokémon y actualizar el campo order
+    const newPokemon: Pokemon = { ...p, order: selectedPokemons.length }
+    console.log(p, 'a')
 
     const newSelection = [ ...selectedPokemons, newPokemon ]
     setSelectedPokemons(newSelection)
@@ -125,7 +121,7 @@ export default function DialogAddPokemonToTeams ({ open, setOpen, pokemonIds }: 
 
     setSelectedPokemons(prev => {
       const byId = new Map(prev.map(sp => [ String(sp.id), sp ]))
-      const next: TeamPokemon[] = ids
+      const next: Pokemon[] = ids
         .map(id => byId.get(id))
         .filter(Boolean)
         .map((sp, i) => ({ ...sp!, order: i }))
@@ -326,7 +322,7 @@ export default function DialogAddPokemonToTeams ({ open, setOpen, pokemonIds }: 
                           <div className="w-full h-full flex flex-col gap-2" ref={containerRef}>
                             {
                               selectedPokemons
-                                .sort((a, b) => a.order - b.order)
+                                .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
                                 .map(sp => {
                                   const p = (data ?? []).find(pk => pk.id === sp.id)
                                   if (!p) return null

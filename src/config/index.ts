@@ -34,3 +34,6 @@ export function getConfig () {
     },
   }
 }
+
+// Limite de pokemones por equipo
+export const MAX_POKEMONS_PER_TEAM = 6

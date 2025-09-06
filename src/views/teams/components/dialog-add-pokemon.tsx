@@ -16,12 +16,6 @@ interface Props {
   team: Team
 }
 
-type TeamPokemon = {
-  id: number
-  name: string
-  order: number
-}
-
 export default function DialogAddPokemon ({ open, setOpen, team }: Props) {
   const {
     data,
@@ -56,7 +50,7 @@ export default function DialogAddPokemon ({ open, setOpen, team }: Props) {
   //
   // Estado local con los pokemones seleccionados
 
-  const [ selectedPokemons, setSelectedPokemons ] = React.useState<TeamPokemon[]>([])
+  const [ selectedPokemons, setSelectedPokemons ] = React.useState<Pokemon[]>([])
 
   //
   // sincronizar con team.pokemons cuando abre el dialogo
@@ -82,13 +76,7 @@ export default function DialogAddPokemon ({ open, setOpen, team }: Props) {
       return
     }
 
-    const newPokemon: TeamPokemon = {
-      id: p.id,
-      name: p.name,
-      order: selectedPokemons.length,
-    }
-
-    const newSelection = [ ...selectedPokemons, newPokemon ]
+    const newSelection = [ ...selectedPokemons, { ...p, order: selectedPokemons.length } ]
     setSelectedPokemons(newSelection)
     updateTeam(team.id, { pokemons: newSelection })
     toast.success(`${p.name} agregado a ${team.name}.`)
@@ -126,7 +114,7 @@ export default function DialogAddPokemon ({ open, setOpen, team }: Props) {
 
     setSelectedPokemons(prev => {
       const byId = new Map(prev.map(sp => [ String(sp.id), sp ]))
-      const next: TeamPokemon[] = ids
+      const next: Pokemon[] = ids
         .map(id => byId.get(id))
         .filter(Boolean)
         .map((sp, i) => ({ ...sp!, order: i }))
@@ -287,7 +275,7 @@ export default function DialogAddPokemon ({ open, setOpen, team }: Props) {
                     <div className="w-full h-full flex flex-col gap-2" ref={containerRef}>
                       {
                         selectedPokemons
-                          .sort((a, b) => a.order - b.order)
+                          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
                           .map(sp => {
                             const p = pokemons.find(pk => pk.id === sp.id)
                             if (!p) return null

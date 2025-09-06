@@ -10,17 +10,28 @@ export function usePokemonList ({ limit = 20, offset = 0 } = {}) {
     queryKey: [ 'pokemonList', limit, offset ],
     queryFn: async () => {
       const data = await getPokemonList({ limit, offset })
+
       return Promise.all(
         data.map(async (p: { name: string; url: string }) => {
-          const id = p.url.split('/').filter(Boolean).pop()
+          const id = Number(p.url.split('/').filter(Boolean).pop())
           const res = await fetch(p.url)
           const full = await res.json()
 
           return {
-            id: Number(id),
-            name: p.name,
-            sprite: full.sprites.other['official-artwork'].front_default,
+            id,
+            name: full.name,
+            order: null,
+            base_experience: full.base_experience,
+            height: full.height / 10, // metros
+            weight: full.weight / 10, // kg
             types: full.types.map((t: any) => t.type.name),
+            abilities: full.abilities.map((a: any) => a.ability.name),
+            stats: full.stats.map((s: any) => ({
+              name: s.stat.name,
+              base_stat: s.base_stat,
+              effort: s.effort
+            })),
+            sprite: full.sprites.other['official-artwork'].front_default
           } as Pokemon
         })
       )
@@ -28,7 +39,10 @@ export function usePokemonList ({ limit = 20, offset = 0 } = {}) {
   })
 }
 
-export function useInfinitePokemonList ({ limit = 20, enabled = true }: { limit?: number; enabled?: boolean }) {
+export function useInfinitePokemonList ({
+  limit = 20,
+  enabled = true
+}: { limit?: number; enabled?: boolean }) {
   return useInfiniteQuery<Pokemon[], Error>({
     queryKey: [ 'pokemonListInfinite', limit ],
     queryFn: async ({ pageParam = 0 }) => {
@@ -38,16 +52,25 @@ export function useInfinitePokemonList ({ limit = 20, enabled = true }: { limit?
       // Traer detalles de cada Pokémon
       const pokemons = await Promise.all(
         data.map(async (p: { name: string; url: string }) => {
-          const id = p.url.split('/').filter(Boolean).pop()
+          const id = Number(p.url.split('/').filter(Boolean).pop())
           const res = await fetch(p.url)
           const full = await res.json()
 
           return {
-            ...full, // 👈 traemos TODAS las props originales
-            id: Number(id),
-            name: full.name, // preferimos el name real del full
-            sprite: full.sprites.other['official-artwork'].front_default,
+            id,
+            name: full.name,
+            order: null,
+            base_experience: full.base_experience,
+            height: full.height / 10, // en metros
+            weight: full.weight / 10, // en kg
             types: full.types.map((t: any) => t.type.name),
+            abilities: full.abilities.map((a: any) => a.ability.name),
+            stats: full.stats.map((s: any) => ({
+              name: s.stat.name,
+              base_stat: s.base_stat,
+              effort: s.effort
+            })),
+            sprite: full.sprites.other['official-artwork'].front_default
           } as Pokemon
         })
       )
@@ -60,7 +83,7 @@ export function useInfinitePokemonList ({ limit = 20, enabled = true }: { limit?
       return lastPage.length < limit ? undefined : nextOffset
     },
     staleTime: 1000 * 60 * 5, // 5 minutos
-    enabled: enabled ?? true, // por defecto está habilitada
+    enabled: enabled ?? true
   })
 }
 
@@ -84,17 +107,28 @@ export function usePokemonsByIds ({ ids, enabled }: { ids: (string | number)[]; 
       const pokemons = await Promise.all(
         ids.map(async (id) => {
           const full = await getPokemonById(id.toString())
+
           return {
             id: full.id,
             name: full.name,
-            sprite: full.sprites.other['official-artwork'].front_default,
+            order: null,
+            base_experience: full.base_experience,
+            height: full.height / 10, // metros
+            weight: full.weight / 10, // kg
             types: full.types.map((t: any) => t.type.name),
+            abilities: full.abilities.map((a: any) => a.ability.name),
+            stats: full.stats.map((s: any) => ({
+              name: s.stat.name,
+              base_stat: s.base_stat,
+              effort: s.effort
+            })),
+            sprite: full.sprites.other['official-artwork'].front_default
           } as Pokemon
         })
       )
 
       return pokemons
     },
-    enabled: enabled
+    enabled: enabled ?? true
   })
 }
